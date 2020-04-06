@@ -9,6 +9,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 import urllib.parse
 from datetime import datetime
+from multiprocessing import Pool
 
 def main():
     print('Getting staff urls...')
@@ -28,8 +29,10 @@ def main():
             urls.append(encoded_url)
             
     print('Staff emails found:')
-    for url in urls:
-        print(get_details(url))
+    
+    mypool = Pool()
+    mypool.map(print_details, urls)
+    
         
 def fix_encoding(url):
     components = urllib.parse.urlsplit(url)
@@ -42,6 +45,9 @@ def get_content(url):
     data = response.read()
     doc = BeautifulSoup(data, 'html.parser')
     return doc.find(id='tresc_wlasciwa')
+
+def print_details(url):
+    print(get_details(url))
 
 def get_details(url):
     try:
@@ -57,11 +63,6 @@ def get_details(url):
             return header.get_text() + ': ' + email
     return header.get_text() + ' (no email found)'
 
-start = datetime.now().timestamp()
 
-main()
-
-end = datetime.now().timestamp()
-
-duration = end - start
-print('Processing time = ' + str(duration))
+if __name__== '__main__':
+    main()
