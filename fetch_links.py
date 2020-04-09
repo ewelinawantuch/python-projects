@@ -16,10 +16,10 @@ response = urllib.request.urlopen(url)
 data = response.read()
 doc = BeautifulSoup(data, 'html.parser')
 
-links = doc.select('ol > li')
-
-i = 1
-
-for link in links:
-    print(i,  link.get_text())
-    i +=1
+lists = doc.find_all('ol')
+for list in lists:
+   i = 1
+   list_items = list.find_all('li')
+   for y in list_items:
+       print(i, y.get_text()) 
+       i += 1
